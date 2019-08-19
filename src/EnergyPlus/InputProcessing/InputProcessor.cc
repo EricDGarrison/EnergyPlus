@@ -238,6 +238,21 @@ void InputProcessor::markObjectAsUsed(const std::string &objectType, const std::
     }
 }
 
+void cleanEPJSON(json &epjson)
+{
+    if (epjson.type() == json::value_t::object) {
+
+        epjson.erase("idf_order");
+        epjson.erase("idf_max_fields");
+        epjson.erase("idf_max_extensible_fields");
+
+        for (auto it = epjson.begin(); it != epjson.end(); ++it) {
+            cleanEPJSON(epjson[it.key()]);
+        }
+    }
+
+}
+
 void InputProcessor::processInput()
 {
     std::ifstream input_stream(DataStringGlobals::inputFileName, std::ifstream::in);
@@ -280,12 +295,16 @@ void InputProcessor::processInput()
         if (!DataGlobals::isEpJSON) {
             bool success = true;
             epJSON = idf_parser->decode(input_file, schema, success);
+
             //			bool hasErrors = processErrors();
             //			if ( !success || hasErrors ) {
             //				ShowFatalError( "Errors occurred on processing input file. Preceding condition(s) cause termination." );
             //			}
+
             if (DataGlobals::outputEpJSONConversion) {
-                input_file = epJSON.dump(4, ' ', false, json::error_handler_t::replace);
+                json epJSONClean = epJSON;
+                cleanEPJSON(epJSONClean);
+                input_file = epJSONClean.dump(4, ' ', false, json::error_handler_t::replace);
                 std::string convertedIDF(DataStringGlobals::outputDirPathName + DataStringGlobals::inputFileNameOnly + ".epJSON");
                 FileSystem::makeNativePath(convertedIDF);
                 std::ofstream convertedFS(convertedIDF, std::ofstream::out);
