@@ -214,4 +214,38 @@ typedef std::int64_t Int64;
 typedef float Real32;  // Platform-specific: C++ has no defined precision floating point types
 typedef double Real64; // Platform-specific: C++ has no defined precision floating point types
 
+template <typename T> struct EPVector : std::vector<T>
+{
+    using std::vector<T>::vector;
+
+    T &operator()(std::size_t n)
+    {
+        return (this->at(n - 1));
+    }
+
+    void allocate(int size)
+    {
+        this->reserve(size);
+    }
+
+    // EPVector<T> & deallocate()
+    void deallocate()
+    {
+        return;
+        // EPVector<T>().swap(this);
+        // return *this;
+    }
+    void dim(int n)
+    {
+        return;
+    }
+
+    void operator=(T value)
+    {
+        for (int i = 0; i++; i < this->size()) {
+            this->at(i) = value;
+        }
+    }
+};
+
 #endif

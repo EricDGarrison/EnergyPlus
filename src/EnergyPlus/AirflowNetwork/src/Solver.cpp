@@ -49,8 +49,8 @@
 #include <ObjexxFCL/Fmath.hh>
 #include <ObjexxFCL/gio.hh>
 
-#include "AirflowNetwork/Solver.hpp"
 #include "AirflowNetwork/Elements.hpp"
+#include "AirflowNetwork/Solver.hpp"
 
 #include <DataAirLoop.hh>
 #include <DataEnvironment.hh>
@@ -113,11 +113,11 @@ namespace AirflowNetwork {
     static std::string const BlankString;
 
     // Common block AFEDAT
-    Array1D<Real64> AFECTL;
-    Array1D<Real64> AFLOW2;
-    Array1D<Real64> AFLOW;
-    Array1D<Real64> PS;
-    Array1D<Real64> PW;
+    EPVector<Real64> AFECTL;
+    EPVector<Real64> AFLOW2;
+    EPVector<Real64> AFLOW;
+    EPVector<Real64> PS;
+    EPVector<Real64> PW;
 
     // Common block CONTRL
     Real64 PB(0.0);
@@ -127,32 +127,32 @@ namespace AirflowNetwork {
     // Array1D<Real64> RHOZ;
     // Array1D<Real64> SQRTDZ;
     // Array1D<Real64> VISCZ;
-    Array1D<Real64> SUMAF;
+    EPVector<Real64> SUMAF;
     // Array1D<Real64> TZ; // Temperature [C]
     // Array1D<Real64> WZ; // Humidity ratio [kg/kg]
-    Array1D<Real64> PZ; // Pressure [Pa]
+    EPVector<Real64> PZ; // Pressure [Pa]
 
     // Other array variables
     Array1D_int ID;
     Array1D_int IK;
-    Array1D<Real64> AD;
-    Array1D<Real64> AU;
+    EPVector<Real64> AD;
+    EPVector<Real64> AU;
 
 #ifdef SKYLINE_MATRIX_REMOVE_ZERO_COLUMNS
-    Array1D_int newIK;     // noel
-    Array1D<Real64> newAU; // noel
+    Array1D_int newIK;      // noel
+    EPVector<Real64> newAU; // noel
 #endif
 
     // REAL(r64), ALLOCATABLE, DIMENSION(:) :: AL
-    Array1D<Real64> SUMF;
+    EPVector<Real64> SUMF;
     int Unit11(0);
     int Unit21(0);
 
     // Large opening variables
-    Array1D<Real64> DpProf;   // Differential pressure profile for Large Openings [Pa]
-    Array1D<Real64> RhoProfF; // Density profile in FROM zone [kg/m3]
-    Array1D<Real64> RhoProfT; // Density profile in TO zone [kg/m3]
-    Array2D<Real64> DpL;      // Array of stack pressures in link
+    EPVector<Real64> DpProf;   // Differential pressure profile for Large Openings [Pa]
+    EPVector<Real64> RhoProfF; // Density profile in FROM zone [kg/m3]
+    EPVector<Real64> RhoProfT; // Density profile in TO zone [kg/m3]
+    Array2D<Real64> DpL;       // Array of stack pressures in link
 
     // Functions
 
@@ -280,7 +280,8 @@ namespace AirflowNetwork {
             Unit11 = GetNewUnitNumber();
             ObjexxFCL::gio::open(Unit11, DataStringGlobals::eplusADSFileName);
             for (i = 1; i <= NetworkNumOfNodes; ++i) {
-                ObjexxFCL::gio::write(Unit11, Format_901) << i << AirflowNetworkNodeData(i).NodeTypeNum << AirflowNetworkNodeData(i).NodeHeight << TZ(i)
+                ObjexxFCL::gio::write(Unit11, Format_901) << i << AirflowNetworkNodeData(i).NodeTypeNum << AirflowNetworkNodeData(i).NodeHeight <<
+        TZ(i)
                                                << PZ(i);
             }
             ObjexxFCL::gio::write(Unit11, Format_900) << 0;
@@ -303,8 +304,8 @@ namespace AirflowNetwork {
                         //           CASE (CompTypeNum_CVF) ! 'CVF' Constant volume fan component
                         //              WRITE(Unit11,904) AirflowNetworkCompData(i)%CompNum,4,DisSysCompCVFData(j)%FlowRate
                     } else if (SELECT_CASE_var == CompTypeNum_EXF) { // 'EXF' Zone exhaust fan
-                        ObjexxFCL::gio::write(Unit11, Format_904) << AirflowNetworkCompData(i).CompNum << 4 << MultizoneCompExhaustFanData(j).FlowRate;
-                    } else {
+                        ObjexxFCL::gio::write(Unit11, Format_904) << AirflowNetworkCompData(i).CompNum << 4 <<
+        MultizoneCompExhaustFanData(j).FlowRate; } else {
                     }
                 }
             }
@@ -528,7 +529,7 @@ namespace AirflowNetwork {
             }
             properties[n].sqrtDensity = std::sqrt(properties[n].density);
             properties[n].viscosity = 1.71432e-5 + 4.828e-8 * properties[n].temperature;
-            //if (LIST >= 2) ObjexxFCL::gio::write(Unit21, Format_903) << "D,V:" << n << properties[n].density << properties[n].viscosity;
+            // if (LIST >= 2) ObjexxFCL::gio::write(Unit21, Format_903) << "D,V:" << n << properties[n].density << properties[n].viscosity;
         }
         // Compute stack pressures.
         for (i = 1; i <= NetworkNumOfLinks; ++i) {
@@ -560,7 +561,7 @@ namespace AirflowNetwork {
         for (i = 1; i <= NetworkNumOfLinks; ++i) {
             n = AirflowNetworkLinkageData(i).NodeNums[0];
             m = AirflowNetworkLinkageData(i).NodeNums[1];
-            //if (LIST >= 1) {
+            // if (LIST >= 1) {
             //    gio::write(Unit21, Format_901) << "Flow: " << i << n << m << AirflowNetworkLinkSimu(i).DP << AFLOW(i) << AFLOW2(i);
             //}
             if (AirflowNetworkCompData(AirflowNetworkLinkageData(i).CompNum).CompTypeNum == CompTypeNum_HOP) {
@@ -571,7 +572,7 @@ namespace AirflowNetwork {
                 SUMAF(m) += AFLOW(i) + AFLOW2(i);
             }
         }
-        //for (n = 1; n <= NetworkNumOfNodes; ++n) {
+        // for (n = 1; n <= NetworkNumOfNodes; ++n) {
         //    if (LIST >= 1) gio::write(Unit21, Format_903) << "Room: " << n << PZ(n) << SUMAF(n) << properties[n].temperature;
         //}
 
@@ -616,10 +617,10 @@ namespace AirflowNetwork {
         }
     }
 
-    void SOLVZP(Array1A_int IK,     // pointer to the top of column/row "K"
-                Array1A<Real64> AD, // the main diagonal of [A] before and after factoring
-                Array1A<Real64> AU, // the upper triangle of [A] before and after factoring
-                int &ITER           // number of iterations
+    void SOLVZP(Array1A_int IK,      // pointer to the top of column/row "K"
+                EPVector<Real64> AD, // the main diagonal of [A] before and after factoring
+                EPVector<Real64> AU, // the upper triangle of [A] before and after factoring
+                int &ITER            // number of iterations
     )
     {
 
@@ -679,14 +680,14 @@ namespace AirflowNetwork {
         bool LFLAG;
         int CONVG;
         int ACCEL;
-        Array1D<Real64> PCF(NetworkNumOfNodes);
-        Array1D<Real64> CEF(NetworkNumOfNodes);
+        EPVector<Real64> PCF(NetworkNumOfNodes);
+        EPVector<Real64> CEF(NetworkNumOfNodes);
         Real64 C;
         Real64 SSUMF;
         Real64 SSUMAF;
         Real64 ACC0;
         Real64 ACC1;
-        Array1D<Real64> CCF(NetworkNumOfNodes);
+        EPVector<Real64> CCF(NetworkNumOfNodes);
 
         // Formats
         static ObjexxFCL::gio::Fmt Format_901("(A5,I3,2E14.6,0P,F8.4,F24.14)");
@@ -883,7 +884,7 @@ namespace AirflowNetwork {
         int thisIK;
         bool allZero; // noel
 #endif
-        Array1D<Real64> X(4);
+        EPVector<Real64> X(4);
         Real64 DP;
         std::array<Real64, 2> F{{0.0, 0.0}};
         std::array<Real64, 2> DF{{0.0, 0.0}};
@@ -915,7 +916,7 @@ namespace AirflowNetwork {
             } else {
                 DP = PZ(n) - PZ(m) + DpL(i, 1) + PW(i);
             }
-            //if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << "PS:" << i << n << M << PS(i) << PW(i) << AirflowNetworkLinkSimu(i).DP;
+            // if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << "PS:" << i << n << M << PS(i) << PW(i) << AirflowNetworkLinkSimu(i).DP;
             j = AirflowNetworkLinkageData(i).CompNum;
             {
                 auto const SELECT_CASE_var(AirflowNetworkCompData(j).CompTypeNum);
@@ -971,7 +972,7 @@ namespace AirflowNetwork {
             if (AirflowNetworkCompData(j).CompTypeNum == CompTypeNum_DOP) {
                 AFLOW2(i) = F[1];
             }
-            //if (LIST >= 3) ObjexxFCL::gio::write(Unit21, Format_901) << " NRi:" << i << n << M << AirflowNetworkLinkSimu(i).DP << F[0] << DF[0];
+            // if (LIST >= 3) ObjexxFCL::gio::write(Unit21, Format_901) << " NRi:" << i << n << M << AirflowNetworkLinkSimu(i).DP << F[0] << DF[0];
             FLAG = 1;
             if (AirflowNetworkNodeData(n).NodeTypeNum == 0) {
                 ++FLAG;
@@ -990,7 +991,7 @@ namespace AirflowNetwork {
             if (FLAG != 1) FILSKY(X, AirflowNetworkLinkageData(i).NodeNums, IK, AU, AD, FLAG);
             if (NF == 1) continue;
             AFLOW2(i) = F[1];
-            //if (LIST >= 3) ObjexxFCL::gio::write(Unit21, Format_901) << " NRj:" << i << n << m << AirflowNetworkLinkSimu(i).DP << F[1] << DF[1];
+            // if (LIST >= 3) ObjexxFCL::gio::write(Unit21, Format_901) << " NRj:" << i << n << m << AirflowNetworkLinkSimu(i).DP << F[1] << DF[1];
             FLAG = 1;
             if (AirflowNetworkNodeData(n).NodeTypeNum == 0) {
                 ++FLAG;
@@ -1079,7 +1080,6 @@ namespace AirflowNetwork {
 #endif
     }
 
-
     int AFEFAN(int const JA,               // Component number
                bool const LFLAG,           // Initialization flag.If = 1, use laminar relationship
                Real64 const PDROP,         // Total pressure drop across a component (P1 - P2) [Pa]
@@ -1161,12 +1161,14 @@ namespace AirflowNetwork {
         } else {
             PRISE = -PDROP * (DisSysCompDetFanData(CompNum).RhoAir / propN.density) / (DisSysCompDetFanData(CompNum).TranRat * AFECTL(i));
         }
-        //if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fan:" << i << PDROP << PRISE << AFECTL(i) << DisSysCompDetFanData(CompNum).TranRat;
+        // if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fan:" << i << PDROP << PRISE << AFECTL(i) <<
+        // DisSysCompDetFanData(CompNum).TranRat;
         if (LFLAG) {
             // Initialization by linear approximation.
             F[0] = -DisSysCompDetFanData(CompNum).Qfree * AFECTL(i) * (1.0 - PRISE / DisSysCompDetFanData(CompNum).Pshut);
             DPDF = -DisSysCompDetFanData(CompNum).Pshut / DisSysCompDetFanData(CompNum).Qfree;
-            //if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fni:" << JA << DisSysCompDetFanData(CompNum).Qfree << DisSysCompDetFanData(CompNum).Pshut;
+            // if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fni:" << JA << DisSysCompDetFanData(CompNum).Qfree <<
+            // DisSysCompDetFanData(CompNum).Pshut;
         } else {
             // Solution of the fan performance curve.
             // Determine curve fit range.
@@ -1185,7 +1187,7 @@ namespace AirflowNetwork {
                      DX * (DisSysCompDetFanData(CompNum).Coeff(k + 2) +
                            DX * (DisSysCompDetFanData(CompNum).Coeff(k + 3) + DX * DisSysCompDetFanData(CompNum).Coeff(k + 5))) -
                      PRISE;
-                //if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fp0:" << j << BX << BY << DX << DY;
+                // if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fp0:" << j << BX << BY << DX << DY;
                 if (BY * DY <= 0.0) break;
                 ++j;
                 if (j > NumCur) ShowFatalError("Out of range, too high (FAN) in ADS simulation");
@@ -1216,7 +1218,7 @@ namespace AirflowNetwork {
             BY = CY;
             if (CY * CCY > 0.0) DY *= 0.5;
         Label70:;
-            //if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fpi:" << j << BX << CX << DX << BY << DY;
+            // if (LIST >= 4) ObjexxFCL::gio::write(Unit21, Format_901) << " fpi:" << j << BX << CX << DX << BY << DY;
             if (DX - BX < TOL * CX) goto Label80;
             if (DX - BX < TOL) goto Label80;
             goto Label40;
@@ -1300,7 +1302,6 @@ namespace AirflowNetwork {
 
     // Leave it for the time being and revise later. Or drop this component ???????????
 
-   
     int AFEREL(int const j,                // Component number
                bool const LFLAG,           // Initialization flag.If = 1, use laminar relationship
                Real64 const PDROP,         // Total pressure drop across a component (P1 - P2) [Pa]
@@ -1700,9 +1701,9 @@ namespace AirflowNetwork {
         return 1;
     }
 
-    void FACSKY(Array1A<Real64> AU,   // the upper triangle of [A] before and after factoring
-                Array1A<Real64> AD,   // the main diagonal of [A] before and after factoring
-                Array1A<Real64> AL,   // the lower triangle of [A] before and after factoring
+    void FACSKY(EPVector<Real64> AU,  // the upper triangle of [A] before and after factoring
+                EPVector<Real64> AD,  // the main diagonal of [A] before and after factoring
+                EPVector<Real64> AL,  // the lower triangle of [A] before and after factoring
                 Array1A_int const IK, // pointer to the top of column/row "K"
                 int const NEQ,        // number of equations
                 int const NSYM        // symmetry:  0 = symmetric matrix, 1 = non-symmetric
@@ -1849,13 +1850,13 @@ namespace AirflowNetwork {
         }
     }
 
-    void SLVSKY(Array1A<Real64> const AU, // the upper triangle of [A] before and after factoring
-                Array1A<Real64> const AD, // the main diagonal of [A] before and after factoring
-                Array1A<Real64> const AL, // the lower triangle of [A] before and after factoring
-                Array1A<Real64> B,        // "B" vector (input); "X" vector (output).
-                Array1A_int const IK,     // pointer to the top of column/row "K"
-                int const NEQ,            // number of equations
-                int const NSYM            // symmetry:  0 = symmetric matrix, 1 = non-symmetric
+    void SLVSKY(EPVector<Real64> AU,  // the upper triangle of [A] before and after factoring
+                EPVector<Real64> AD,  // the main diagonal of [A] before and after factoring
+                EPVector<Real64> AL,  // the lower triangle of [A] before and after factoring
+                EPVector<Real64> B,   // "B" vector (input); "X" vector (output).
+                Array1A_int const IK, // pointer to the top of column/row "K"
+                int const NEQ,        // number of equations
+                int const NSYM        // symmetry:  0 = symmetric matrix, 1 = non-symmetric
     )
     {
 
@@ -1951,11 +1952,11 @@ namespace AirflowNetwork {
         }
     }
 
-    void FILSKY(Array1A<Real64> const X,     // element array (row-wise sequence)
+    void FILSKY(EPVector<Real64> X,          // element array (row-wise sequence)
                 std::array<int, 2> const LM, // location matrix
                 Array1A_int const IK,        // pointer to the top of column/row "K"
-                Array1A<Real64> AU,          // the upper triangle of [A] before and after factoring
-                Array1A<Real64> AD,          // the main diagonal of [A] before and after factoring
+                EPVector<Real64> AU,         // the upper triangle of [A] before and after factoring
+                EPVector<Real64> AD,         // the main diagonal of [A] before and after factoring
                 int const FLAG               // mode of operation
     )
     {
@@ -2028,10 +2029,10 @@ namespace AirflowNetwork {
         }
     }
 
-    void DUMPVD(std::string const &S,    // Description
-                Array1A<Real64> const V, // Output values
-                int const n,             // Array size
-                int const UOUT           // Output file unit
+    void DUMPVD(std::string const &S, // Description
+                EPVector<Real64> V,   // Output values
+                int const n,          // Array size
+                int const UOUT        // Output file unit
     )
     {
 
@@ -2056,7 +2057,7 @@ namespace AirflowNetwork {
         // na
 
         // Argument array dimensioning
-        V.dim(_);
+        //V.dim(_);
 
         // Locals
         // SUBROUTINE ARGUMENT DEFINITIONS:
@@ -2086,10 +2087,10 @@ namespace AirflowNetwork {
         ObjexxFCL::gio::write(UOUT);
     }
 
-    void DUMPVR(std::string const &S,    // Description
-                Array1A<Real64> const V, // Output values
-                int const n,             // Array size
-                int const UOUT           // Output file unit
+    void DUMPVR(std::string const &S, // Description
+                EPVector<Real64> V,   // Output values
+                int const n,          // Array size
+                int const UOUT        // Output file unit
     )
     {
 
@@ -2114,7 +2115,7 @@ namespace AirflowNetwork {
         // na
 
         // Argument array dimensioning
-        V.dim(_);
+        //V.dim(_);
 
         // Locals
         // SUBROUTINE ARGUMENT DEFINITIONS:
@@ -2220,11 +2221,11 @@ namespace AirflowNetwork {
         Real64 Width;
         Real64 Height;
 
-        Real64 fma12;                         // massflow in direction "from-to" [kg/s]
-        Real64 fma21;                         // massflow in direction "to-from" [kg/s]
-        Real64 dp1fma12;                      // derivative d fma12 / d Dp [kg/s/Pa]
-        Real64 dp1fma21;                      // derivative d fma21 / d Dp [kg/s/Pa]
-        Array1D<Real64> DpProfNew(NrInt + 2); // Differential pressure profile for Large Openings, taking into account fixed
+        Real64 fma12;                          // massflow in direction "from-to" [kg/s]
+        Real64 fma21;                          // massflow in direction "to-from" [kg/s]
+        Real64 dp1fma12;                       // derivative d fma12 / d Dp [kg/s/Pa]
+        Real64 dp1fma21;                       // derivative d fma21 / d Dp [kg/s/Pa]
+        EPVector<Real64> DpProfNew(NrInt + 2); // Differential pressure profile for Large Openings, taking into account fixed
         // pressures and actual zone pressures at reference height
         Real64 Fact;   // Actual opening factor
         Real64 DifLim; // Limit for the pressure difference where laminarization takes place [Pa]
@@ -2243,7 +2244,7 @@ namespace AirflowNetwork {
         Real64 fmasum;
         Real64 dfmasum;
         Real64 Prefact;
-        Array1D<Real64> EvalHghts(NrInt + 2);
+        EPVector<Real64> EvalHghts(NrInt + 2);
         Real64 h2;
         Real64 h4;
         Real64 alpha;
@@ -2665,19 +2666,19 @@ namespace AirflowNetwork {
         return NF;
     }
 
-    void PresProfile(int const il,                 // Linkage number
-                     int const Pprof,              // Opening number
-                     Real64 const G,               // gravitation field strength [N/kg]
-                     Array1A<Real64> const DpF,    // Stack pressures at start heights of Layers
-                     Array1A<Real64> const DpT,    // Stack pressures at start heights of Layers
-                     Array1A<Real64> const BetaF,  // Density gradients in the FROM zone (starting at linkheight) [Kg/m3/m]
-                     Array1A<Real64> const BetaT,  // Density gradients in the TO zone (starting at linkheight) [Kg/m3/m]
-                     Array1A<Real64> const RhoStF, // Density at the start heights of Layers in the FROM zone
-                     Array1A<Real64> const RhoStT, // Density at the start heights of Layers in the TO zone
-                     int const From,               // Number of FROM zone
-                     int const To,                 // Number of To zone
-                     Real64 const ActLh,           // Actual height of opening [m]
-                     Real64 const OwnHeightFactor  // Cosine of deviation angle of the opening plane from the vertical direction
+    void PresProfile(int const il,                // Linkage number
+                     int const Pprof,             // Opening number
+                     Real64 const G,              // gravitation field strength [N/kg]
+                     EPVector<Real64> DpF,        // Stack pressures at start heights of Layers
+                     EPVector<Real64> DpT,        // Stack pressures at start heights of Layers
+                     EPVector<Real64> BetaF,      // Density gradients in the FROM zone (starting at linkheight) [Kg/m3/m]
+                     EPVector<Real64> BetaT,      // Density gradients in the TO zone (starting at linkheight) [Kg/m3/m]
+                     EPVector<Real64> RhoStF,     // Density at the start heights of Layers in the FROM zone
+                     EPVector<Real64> RhoStT,     // Density at the start heights of Layers in the TO zone
+                     int const From,              // Number of FROM zone
+                     int const To,                // Number of To zone
+                     Real64 const ActLh,          // Actual height of opening [m]
+                     Real64 const OwnHeightFactor // Cosine of deviation angle of the opening plane from the vertical direction
     )
     {
 
@@ -2742,15 +2743,15 @@ namespace AirflowNetwork {
         // na
 
         // SUBROUTINE LOCAL VARIABLE DECLARATIONS:
-        Array1D<Real64> zF(2); // Startheights of layers in FROM-, TO-zone
-        Array1D<Real64> zT(2);
-        Array1D<Real64> zStF(2); // Startheights of layers within the LO, starting with the actual startheight of the LO.
-        Array1D<Real64> zStT(2);
+        EPVector<Real64> zF(2); // Startheights of layers in FROM-, TO-zone
+        EPVector<Real64> zT(2);
+        EPVector<Real64> zStF(2); // Startheights of layers within the LO, starting with the actual startheight of the LO.
+        EPVector<Real64> zStT(2);
         // The values in the arrays DpF, DpT, BetaF, BetaT, RhoStF, RhoStT are calculated at these heights.
         Real64 hghtsFR;
         Real64 hghtsTR;
-        Array1D<Real64> hghtsF(NrInt + 2); // Heights of evaluation points for pressure and density profiles
-        Array1D<Real64> hghtsT(NrInt + 2);
+        EPVector<Real64> hghtsF(NrInt + 2); // Heights of evaluation points for pressure and density profiles
+        EPVector<Real64> hghtsT(NrInt + 2);
         Real64 Interval; // Distance between two evaluation points
         Real64 delzF;    // Interval between actual evaluation point and startheight of actual layer in FROM-, TO-zone
         Real64 delzT;
@@ -2918,21 +2919,21 @@ namespace AirflowNetwork {
         Real64 Xhl1; // Humidity in From and To zone at link level [kg/kg]
         Real64 Xhl2;
         //      REAL(r64) Xhout ! outside humidity [kg/kg]
-        Array1D<Real64> Hfl(NumOfLinksMultiZone); // Own height factor for large (slanted) openings
-        int Nl;                                   // number of links
+        EPVector<Real64> Hfl(NumOfLinksMultiZone); // Own height factor for large (slanted) openings
+        int Nl;                                    // number of links
 
-        Array1D<Real64> DpF(2);
+        EPVector<Real64> DpF(2);
         Real64 DpP;
-        Array1D<Real64> DpT(2);
+        EPVector<Real64> DpT(2);
         Real64 H;
-        Array1D<Real64> RhoStF(2);
-        Array1D<Real64> RhoStT(2);
+        EPVector<Real64> RhoStF(2);
+        EPVector<Real64> RhoStT(2);
         Real64 RhoDrDummi;
-        Array1D<Real64> BetaStF(2);
-        Array1D<Real64> BetaStT(2);
+        EPVector<Real64> BetaStF(2);
+        EPVector<Real64> BetaStT(2);
         Real64 T;
         Real64 X;
-        Array1D<Real64> HSt(2);
+        EPVector<Real64> HSt(2);
         Real64 TzFrom;
         Real64 XhzFrom;
         Real64 TzTo;
@@ -2942,7 +2943,7 @@ namespace AirflowNetwork {
         Real64 Pref;
         Real64 PzFrom;
         Real64 PzTo;
-        Array1D<Real64> RhoLd(2);
+        EPVector<Real64> RhoLd(2);
         Real64 RhoStd;
         int From;
         int To;
@@ -2966,7 +2967,7 @@ namespace AirflowNetwork {
         CONV = Latitude * 2.0 * Pi / 360.0;
         G = 9.780373 * (1.0 + 0.0052891 * pow_2(std::sin(CONV)) - 0.0000059 * pow_2(std::sin(2.0 * CONV)));
 
-        Hfl = 1.0;
+        Hfl = (Real64)1.0;
         Pbz = OutBaroPress;
         Nl = NumOfLinksMultiZone;
         OpenNum = 0;
