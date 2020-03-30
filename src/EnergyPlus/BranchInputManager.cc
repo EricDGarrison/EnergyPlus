@@ -145,11 +145,11 @@ namespace BranchInputManager {
     // PUBLIC  MyPlantSizingIndex
 
     // Object Data
-    Array1D<BranchListData> BranchList;    // Branch List data for each Branch List
-    Array1D<BranchData> Branch;            // Branch Data for each Branch
-    Array1D<ConnectorData> ConnectorLists; // Connector List data for each Connector List
-    Array1D<SplitterData> Splitters;       // Splitter Data for each Splitter
-    Array1D<MixerData> Mixers;             // Mixer Data for each Mixer
+    EPVector<BranchListData> BranchList;    // Branch List data for each Branch List
+    EPVector<BranchData> Branch;            // Branch Data for each Branch
+    EPVector<ConnectorData> ConnectorLists; // Connector List data for each Connector List
+    EPVector<SplitterData> Splitters;       // Splitter Data for each Splitter
+    EPVector<MixerData> Mixers;             // Mixer Data for each Mixer
 
     // Functions
     void clear_state()

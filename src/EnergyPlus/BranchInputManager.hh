@@ -102,9 +102,9 @@ namespace BranchInputManager {
         int NumOfConnectors;          // Number of Connectors in this group
         int NumOfSplitters;           // Number of Splitters in this connector group
         int NumOfMixers;              // Number of Mixers in this connector group
-        Array1D_string ConnectorType; // Connector:Splitter or Connector:Mixer
-        Array1D_string ConnectorName; // Name for that Connector:Splitter or Connector:Mixer
-        Array1D_int ConnectorMatchNo; // Pointer to index where this Splitter or Mixer matches
+        EPVector<std::string> ConnectorType; // Connector:Splitter or Connector:Mixer
+        EPVector<std::string> ConnectorName; // Name for that Connector:Splitter or Connector:Mixer
+        EPVector<int> ConnectorMatchNo; // Pointer to index where this Splitter or Mixer matches
         // Splitter => Mixer or Mixer => Splitter.  0 indicates no match
 
         // Default Constructor
@@ -191,11 +191,11 @@ namespace BranchInputManager {
     };
 
     // Object Data
-    extern Array1D<BranchListData> BranchList;    // Branch List data for each Branch List
-    extern Array1D<BranchData> Branch;            // Branch Data for each Branch
-    extern Array1D<ConnectorData> ConnectorLists; // Connector List data for each Connector List
-    extern Array1D<SplitterData> Splitters;       // Splitter Data for each Splitter
-    extern Array1D<MixerData> Mixers;             // Mixer Data for each Mixer
+    extern EPVector<BranchListData> BranchList;    // Branch List data for each Branch List
+    extern EPVector<BranchData> Branch;            // Branch Data for each Branch
+    extern EPVector<ConnectorData> ConnectorLists; // Connector List data for each Connector List
+    extern EPVector<SplitterData> Splitters;       // Splitter Data for each Splitter
+    extern EPVector<MixerData> Mixers;             // Mixer Data for each Mixer
 
     // Functions
     void clear_state();

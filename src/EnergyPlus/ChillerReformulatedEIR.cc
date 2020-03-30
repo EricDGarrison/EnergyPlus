@@ -139,7 +139,7 @@ namespace ChillerReformulatedEIR {
     bool GetInputREIR(true); // When TRUE, calls subroutine to read input file
 
     // Object Data
-    Array1D<ReformulatedEIRChillerSpecs> ElecReformEIRChiller; // dimension to number of machines
+    EPVector<ReformulatedEIRChillerSpecs> ElecReformEIRChiller; // dimension to number of machines
 
     void clear_state()
     {
@@ -1427,8 +1427,8 @@ namespace ChillerReformulatedEIR {
                 //     chiller capacity, and mass flow rate. Starting with the calculated condenser inlet temp and PLR = 0,
                 //     calculate the condenser outlet temp proportional to PLR and test the EIRFPLR curve output for negative numbers.
                 bool FoundNegValue = false;
-                Array1D<Real64> CurveValArray(11, 0.0); // Used to evaluate EIRFPLR curve objects
-                Array1D<Real64> CondTempArray(11, 0.0); // Used to evaluate EIRFPLR curve objects
+                EPVector<Real64> CurveValArray(11, 0.0); // Used to evaluate EIRFPLR curve objects
+                EPVector<Real64> CondTempArray(11, 0.0); // Used to evaluate EIRFPLR curve objects
 
                 if (this->ChillerEIRFPLRIndex > 0) {
                     CondTempArray = 0.0;
@@ -1579,7 +1579,7 @@ namespace ChillerReformulatedEIR {
 
             if (CondTempMin > Tmin && CondTempMax < Tmax) {
 
-                Array1D<Real64> Par(6); // Pass parameters for RegulaFalsi solver
+                EPVector<Real64> Par(6); // Pass parameters for RegulaFalsi solver
 
                 //    Initialize iteration parameters for RegulaFalsi function
                 Par(2) = MyLoad;
@@ -1789,7 +1789,7 @@ namespace ChillerReformulatedEIR {
         }
     }
 
-    Real64 ReformulatedEIRChillerSpecs::condOutTempResidual(Real64 const FalsiCondOutTemp, Array1D<Real64> const &Par)
+    Real64 ReformulatedEIRChillerSpecs::condOutTempResidual(Real64 const FalsiCondOutTemp, EPVector<Real64> const &Par)
     {
 
         // FUNCTION INFORMATION:

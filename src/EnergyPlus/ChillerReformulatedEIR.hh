@@ -275,11 +275,11 @@ namespace ChillerReformulatedEIR {
 
         void checkMinMaxCurveBoundaries(bool FirstIteration);
 
-        Real64 condOutTempResidual(Real64 FalsiCondOutTemp, Array1D<Real64> const &Par);
+        Real64 condOutTempResidual(Real64 FalsiCondOutTemp, EPVector<Real64> const &Par);
     };
 
     // Object Data
-    extern Array1D<ReformulatedEIRChillerSpecs> ElecReformEIRChiller; // dimension to number of machines
+    extern EPVector<ReformulatedEIRChillerSpecs> ElecReformEIRChiller; // dimension to number of machines
 
     void clear_state();
 

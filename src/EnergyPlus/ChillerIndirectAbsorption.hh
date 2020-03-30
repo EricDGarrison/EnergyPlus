@@ -49,7 +49,7 @@
 #define ChillerIndirectAbsorption_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
+//#include <ObjexxFCL/Array1D.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus/DataGlobals.hh>
@@ -240,7 +240,7 @@ namespace ChillerIndirectAbsorption {
     };
 
     // Object Data
-    extern Array1D<IndirectAbsorberSpecs> IndirectAbsorber; // dimension to number of machines
+    extern EPVector<IndirectAbsorberSpecs> IndirectAbsorber; // dimension to number of machines
 
     void GetIndirectAbsorberInput();
 
