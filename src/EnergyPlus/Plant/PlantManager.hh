@@ -49,7 +49,7 @@
 #define PlantManager_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
+//#include <ObjexxFCL/Array1D.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus/DataGlobals.hh>
@@ -73,9 +73,9 @@ namespace PlantManager {
     extern bool InitLoopEquip;
     extern bool GetCompSizFac;
 
-    extern Array1D_int SupplySideInletNode;  // Node number for the supply side inlet
-    extern Array1D_int SupplySideOutletNode; // Node number for the supply side outlet
-    extern Array1D_int DemandSideInletNode;  // Inlet node on the demand side
+    extern EPVector<int> SupplySideInletNode; // Node number for the supply side inlet
+    extern EPVector<int> SupplySideOutletNode; // Node number for the supply side outlet
+    extern EPVector<int> DemandSideInletNode;  // Inlet node on the demand side
 
     void clear_state();
 

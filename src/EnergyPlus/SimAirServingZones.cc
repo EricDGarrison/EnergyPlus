@@ -442,14 +442,14 @@ namespace SimAirServingZones {
         std::string AvailManagerListName;      // Name of an availability manager list object
         std::string ConnectorListName;         // Name of a connector list object
         static Array1D_string BranchNames;     // Branch names from GetBranchList call
-        static Array1D_string CompTypes;       // Component types from GetBranchList call
-        static Array1D_string CompNames;       // Component names from GetBranchList call
-        static Array1D_string InletNodeNames;  // Component inlet node names from GetBranchData call
-        static Array1D_string OutletNodeNames; // Component outlet node names from GetBranchData call
-        static Array1D_string NodeNames;       // Outlet node names from GetLoopSplitter call
-        static Array1D_int NodeNumbers;        // Outlet node numbers from GetLoopSplitter call
-        static Array1D_int InletNodeNumbers;   // Component inlet node numbers from GetBranchData call
-        static Array1D_int OutletNodeNumbers;  // Component outlet node numbers from GetBranchData call
+        static EPVector<std::string> CompTypes; // Component types from GetBranchList call
+        static EPVector<std::string> CompNames; // Component names from GetBranchList call
+        static EPVector<std::string> InletNodeNames; // Component inlet node names from GetBranchData call
+        static EPVector<std::string> OutletNodeNames; // Component outlet node names from GetBranchData call
+        static EPVector<std::string> NodeNames;       // Outlet node names from GetLoopSplitter call
+        static EPVector<int> NodeNumbers;      // Outlet node numbers from GetLoopSplitter call
+        static EPVector<int> InletNodeNumbers; // Component inlet node numbers from GetBranchData call
+        static EPVector<int> OutletNodeNumbers; // Component outlet node numbers from GetBranchData call
         Array1D_int DummyInteger(2);           // Placeholder for corresponding plant loop branch pressure drop info
         static bool ErrorsFound(false);        // TRUE if errors detected in input
         static EPVector<bool> PackagedUnit;

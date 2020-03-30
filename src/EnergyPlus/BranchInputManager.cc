@@ -228,7 +228,7 @@ namespace BranchInputManager {
     void GetBranchList(std::string const &LoopName,       // Name of Loop Branch List is on
                        std::string const &BranchListName, // Branch List Name from Input
                        int &NumBranchNames,               // Number of Branches for this Branch List
-                       Array1D_string &BranchNames,       // Names of Branches on this Branch List
+                       Array1D_string &BranchNames,        // Names of Branches on this Branch List
                        std::string const &LoopType        // Type of Loop Branch list is on
     )
     {
@@ -330,12 +330,12 @@ namespace BranchInputManager {
                        int &PressCurveType,                 // Index of a pressure curve object
                        int &PressCurveIndex,                // Index of a pressure curve object
                        int &NumComps,                       // Number of Components on Branch
-                       Array1D_string &CompType,            // Component Type for each item on Branch
-                       Array1D_string &CompName,            // Component Name for each item on Branch
-                       Array1D_string &CompInletNodeNames,  // Component Inlet Node IDs for each item on Branch
-                       Array1D_int &CompInletNodeNums,      // Component Inlet Node Numbers for each item on Branch
-                       Array1D_string &CompOutletNodeNames, // Component Outlet Node IDs for each item on Branch
-                       Array1D_int &CompOutletNodeNums,     // Component Outlet Node Numbers for each item on Branch
+                       EPVector<std::string> &CompType,     // Component Type for each item on Branch
+                       EPVector<std::string> &CompName,     // Component Name for each item on Branch
+                       EPVector<std::string> &CompInletNodeNames, // Component Inlet Node IDs for each item on Branch
+                       EPVector<int> &CompInletNodeNums,    // Component Inlet Node Numbers for each item on Branch
+                       EPVector<std::string> &CompOutletNodeNames, // Component Outlet Node IDs for each item on Branch
+                       EPVector<int> &CompOutletNodeNums,   // Component Outlet Node Numbers for each item on Branch
                        bool &ErrorsFound)
     {
 
@@ -839,8 +839,8 @@ namespace BranchInputManager {
                       std::string &OutletNodeName,          // Outlet Node ID
                       int &OutletNodeNum,                   // Outlet Node Number
                       int &NumInletNodes,                   // Number of Inlet Nodes
-                      Array1D_string &InletNodeNames,       // Inlet Node IDs
-                      Array1D_int &InletNodeNums,           // Inlet Node Numbers
+                      EPVector<std::string> &InletNodeNames, // Inlet Node IDs
+                      EPVector<int> &InletNodeNums,           // Inlet Node Numbers
                       bool &ErrorsFound,
                       Optional_int_const ConnectorNumber, // number of the current item in connector list
                       Optional_int MixerNumber            // Mixer number for this specific splitter
@@ -957,7 +957,7 @@ namespace BranchInputManager {
                                        ObjectIsNotParent,
                                        errFlag);
 
-                if (NumInletNodes > isize(InletNodeNames) || NumInletNodes > isize(InletNodeNums)) {
+                if (NumInletNodes > InletNodeNames.isize() || NumInletNodes > InletNodeNums.isize()) {
                     ShowSevereError("GetLoopMixer: Connector:Mixer=" + MixerName + " contains too many inlets for size of Inlet Array.");
                     ShowContinueError("Max array size=" + TrimSigDigits(size(InletNodeNames)) +
                                       ", Mixer statement inlets=" + TrimSigDigits(NumInletNodes));
@@ -999,8 +999,8 @@ namespace BranchInputManager {
                          std::string &InletNodeName,           // Inlet Node ID
                          int &InletNodeNum,                    // Inlet Node Number
                          int &NumOutletNodes,                  // Number of Outlet Nodes
-                         Array1D_string &OutletNodeNames,      // Outlet Node IDs
-                         Array1D_int &OutletNodeNums,          // Outlet Node Numbers
+                         EPVector<std::string> &OutletNodeNames, // Outlet Node IDs
+                         EPVector<int> &OutletNodeNums,          // Outlet Node Numbers
                          bool &ErrorsFound,
                          Optional_int_const ConnectorNumber, // number of the current item in connector list
                          Optional_int SplitterNumber         // splitter number for this specific splitter
@@ -1121,7 +1121,7 @@ namespace BranchInputManager {
                                        ObjectIsNotParent,
                                        errFlag);
 
-                if (NumOutletNodes > isize(OutletNodeNames) || NumOutletNodes > isize(OutletNodeNums)) {
+                if (NumOutletNodes > OutletNodeNames.isize() || NumOutletNodes > OutletNodeNums.isize()) {
                     ShowSevereError("GetLoopSplitter: Connector:Splitter=" + SplitterName + " contains too many outlets for size of Outlet Array.");
                     ShowContinueError("Max array size=" + TrimSigDigits(size(OutletNodeNames)) +
                                       ", Splitter statement outlets=" + TrimSigDigits(NumOutletNodes));
