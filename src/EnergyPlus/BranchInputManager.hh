@@ -168,7 +168,7 @@ namespace BranchInputManager {
         std::string Name;                 // Splitter Name
         std::string InletBranchName;      // Splitter Inlet Branch Name
         int NumOutletBranches;            // Number of outlets on this Splitter
-        Array1D_string OutletBranchNames; // Names of the Outlet Branches
+        EPVector<std::string> OutletBranchNames; // Names of the Outlet Branches
 
         // Default Constructor
         SplitterData() : NumOutletBranches(0)
@@ -182,7 +182,7 @@ namespace BranchInputManager {
         std::string Name;                // Mixer Name
         std::string OutletBranchName;    // Mixer Outlet Branch Name
         int NumInletBranches;            // Number of inlets for this Mixer
-        Array1D_string InletBranchNames; // Names of Inlet Branches
+        EPVector<std::string> InletBranchNames; // Names of Inlet Branches
 
         // Default Constructor
         MixerData() : NumInletBranches(0)
