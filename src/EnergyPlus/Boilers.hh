@@ -49,7 +49,7 @@
 #define Boilers_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
+//#include <ObjexxFCL/Array1D.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus/DataGlobals.hh>
@@ -185,7 +185,7 @@ namespace Boilers {
         static PlantComponent *factory(std::string const &objectName);
     };
 
-    extern Array1D<BoilerSpecs> Boiler; // boiler data - dimension to number of machines
+    extern EPVector<BoilerSpecs> Boiler; // boiler data - dimension to number of machines
 
     void clear_state();
 

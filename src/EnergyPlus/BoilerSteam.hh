@@ -49,7 +49,7 @@
 #define BoilerSteam_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
+//#include <ObjexxFCL/Array1D.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus/DataGlobals.hh>
@@ -148,7 +148,7 @@ namespace BoilerSteam {
     };
 
     // Object Data
-    extern Array1D<BoilerSpecs> Boiler; // dimension to number of machines
+    extern EPVector<BoilerSpecs> Boiler; // dimension to number of machines
 
     void clear_state();
 
