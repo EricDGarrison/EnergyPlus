@@ -49,7 +49,7 @@
 #define BaseboardElectric_hh_INCLUDED
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
+//#include <ObjexxFCL/Array1D.hh>
 
 // EnergyPlus Headers
 #include <EnergyPlus/DataGlobals.hh>
@@ -109,7 +109,7 @@ namespace BaseboardElectric {
     struct BaseboardNumericFieldData
     {
         // Members
-        Array1D_string FieldNames;
+        EPVector<std::string> FieldNames;
 
         // Default Constructor
         BaseboardNumericFieldData()
@@ -118,8 +118,8 @@ namespace BaseboardElectric {
     };
 
     // Object Data
-    extern Array1D<BaseboardParams> Baseboard;
-    extern Array1D<BaseboardNumericFieldData> BaseboardNumericFields;
+    extern EPVector<BaseboardParams> Baseboard;
+    extern EPVector<BaseboardNumericFieldData> BaseboardNumericFields;
 
     // Functions
 

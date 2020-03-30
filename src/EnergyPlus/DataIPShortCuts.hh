@@ -73,7 +73,7 @@ namespace DataIPShortCuts {
 
     // MODULE VARIABLE DECLARATIONS:
     extern Array1D_string cAlphaFieldNames;
-    extern Array1D_string cNumericFieldNames;
+    extern EPVector<std::string> cNumericFieldNames;
     extern EPVector<bool> lNumericFieldBlanks;
     extern EPVector<bool> lAlphaFieldBlanks;
     extern Array1D_string cAlphaArgs;
