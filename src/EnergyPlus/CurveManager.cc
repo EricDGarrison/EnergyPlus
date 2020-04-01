@@ -175,7 +175,7 @@ namespace CurveManager {
     // SUBROUTINE SPECIFICATIONS FOR MODULE
 
     // Object Data
-    Array1D<PerfomanceCurveData> PerfCurve;
+    EPVector<PerfomanceCurveData> PerfCurve;
     BtwxtManager btwxtManager;
     std::unordered_map<std::string, std::string> UniqueCurveNames;
 
@@ -409,7 +409,7 @@ namespace CurveManager {
         int NumDoubleExpDecay;           // ykt July 2011
         int CurveIndex;                  // do loop index
         int CurveNum;                    // current curve number
-        Array1D<std::string> Alphas(14);       // Alpha items for object
+        Array1D<std::string> Alphas(14); // Alpha items for object
         Array1D<Real64> Numbers(10000);  // Numeric items for object
         int NumAlphas;                   // Number of Alphas for each GetObjectItem call
         int NumNumbers;                  // Number of Numbers for each GetObjectItem call
@@ -2915,8 +2915,8 @@ namespace CurveManager {
 
         // SUBROUTINE LOCAL VARIABLE DECLARATIONS:
         int NumPressure;
-        Array1D<std::string> Alphas(1);     // Alpha items for object
-        Array1D<Real64> Numbers(5);   // Numeric items for object
+        Array1D<std::string> Alphas(1); // Alpha items for object
+        Array1D<Real64> Numbers(5);     // Numeric items for object
         int NumAlphas;                // Number of Alphas for each GetObjectItem call
         int NumNumbers;               // Number of Numbers for each GetObjectItem call
         int IOStatus;                 // Used in GetObjectItem

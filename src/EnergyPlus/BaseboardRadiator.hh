@@ -143,8 +143,8 @@ namespace BaseboardRadiator {
         }
     };
     // Object Data
-    extern Array1D<BaseboardParams> Baseboard;
-    extern Array1D<BaseboardParamsNumericFieldData> BaseboardParamsNumericFields;
+    extern EPVector<BaseboardParams> Baseboard;
+    extern EPVector<BaseboardParamsNumericFieldData> BaseboardParamsNumericFields;
 
     // Functions
 
@@ -170,7 +170,7 @@ namespace BaseboardRadiator {
     void ReportBaseboard(int const BaseboardNum);
 
     Real64 HWBaseboardUAResidual(Real64 const UA,           // UA of coil
-                                 Array1D<Real64> const &Par // par(1) = design coil load [W]
+                                 EPVector<Real64> const &Par // par(1) = design coil load [W]
     );
 
     void UpdateBaseboardPlantConnection(int const BaseboardTypeNum,       // type index

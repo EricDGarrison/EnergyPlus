@@ -53,7 +53,6 @@
 #include <vector>
 
 // ObjexxFCL Headers
-#include <ObjexxFCL/Array1D.hh>
 #include <ObjexxFCL/Array2D.hh>
 #include <ObjexxFCL/Array2S.hh>
 #include <ObjexxFCL/Array5D.hh>
@@ -212,7 +211,7 @@ namespace CurveManager {
         bool Var5MaxPresent;                              // uses data set limit to set Var5Max if false
         bool Var6MinPresent;                              // uses data set limit to set Var6Min if false
         bool Var6MaxPresent;                              // uses data set limit to set Var6Max if false
-        Array1D<TriQuadraticCurveDataStruct> Tri2ndOrder; // structure for triquadratic curve data
+        EPVector<TriQuadraticCurveDataStruct> Tri2ndOrder; // structure for triquadratic curve data
         bool EMSOverrideOn;                               // if TRUE, then EMS is calling to override curve value
         Real64 EMSOverrideCurveValue;                     // Value of curve result EMS is directing to use
         Real64 CurveOutput; // curve output or result
@@ -283,7 +282,7 @@ namespace CurveManager {
     };
 
     // Object Data
-    extern Array1D<PerfomanceCurveData> PerfCurve;
+    extern EPVector<PerfomanceCurveData> PerfCurve;
     extern BtwxtManager btwxtManager;
     // Functions
 
